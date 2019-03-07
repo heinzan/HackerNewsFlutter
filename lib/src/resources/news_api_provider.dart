@@ -1,14 +1,27 @@
 import 'package:http/http.dart' show Client;
+import 'dart:convert';
+import '../models/item_model.dart';
 
 class NewsApiProvider{
 
-  Client client = new Client();
+  Client client =  Client();
+  final _root = 'https://hacker-news.firebaseio.com/v0';
 
-  fetchTopId(){
-    client.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty');
+  fetchTopId() async{
+    final response = await
+    client.get('$_root/topstories.json');
+    final ids = json.decode(response.body);
+
+    return ids;
   }
 
-  fetchItem(){
+  fetchItem(int id) async{
+    final response = await
+        client.get('$_root/item/$id.json?print=pretty');
+
+    final parsedJson = json.decode(response.body);
+
+    return ItemModel.fromJson(parsedJson);
 
   }
 }
